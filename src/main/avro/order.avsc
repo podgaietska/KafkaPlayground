@@ -1,0 +1,9 @@
+{
+  "type": "record",
+  "name": "Order",
+  "namespace": "io.confluent.examples.avro",
+  "fields": [
+    { "name": "orderId", "type": "string" },
+    { "name": "product", "type": "io.confluent.examples.avro.Product" }
+  ]
+}

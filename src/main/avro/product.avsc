@@ -1,0 +1,9 @@
+{
+  "type": "record",
+  "name": "Product",
+  "namespace": "io.confluent.examples.avro",
+  "fields": [
+    { "name": "id", "type": "string" },
+    { "name": "description", "type": "string" }
+  ]
+}
