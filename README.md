@@ -117,15 +117,15 @@ docker-compose down
 - To check server-wide compatibility:
 
 ```bash
-curl -X PUT -H "Content-Type: application/json" --data '{"compatibility": "FULL"}' http://localhost:8081/config
+curl -X GET \
+  -H "Content-Type: application/vnd.schemaregistry.v1+json" \
+  http://localhost:8081/config
 ```
 
 - To change server-wide compatibility:
 
 ```bash
-curl -X GET \
-  -H "Content-Type: application/vnd.schemaregistry.v1+json" \
-  http://localhost:8081/config
+curl -X PUT -H "Content-Type: application/json" --data '{"compatibility": "FULL"}' http://localhost:8081/config
 ```
 
 - To change compatibility of a particular schema: adjust the `config` block in the `build.gradle`
