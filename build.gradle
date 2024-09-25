@@ -3,6 +3,7 @@ plugins {
 	id 'org.springframework.boot' version '3.3.4'
 	id 'io.spring.dependency-management' version '1.1.6'
 	id "com.github.davidmc24.gradle.plugin.avro" version "1.2.0"
+	id "com.github.imflog.kafka-schema-registry-gradle-plugin" version "2.1.1"
 }
 
 group = 'com.podgaietska'
@@ -21,12 +22,61 @@ repositories {
     }
 }
 
+avro {
+    gettersReturnOptional = true
+    optionalGettersForNullableFieldsOnly = true
+}
+
+schemaRegistry {
+    url = "http://localhost:8081" 
+		def serializer = 'AVRO'
+		def productAvroPath = 'src/main/avro/product.avsc'
+		def orderAvroPath = 'src/main/avro/order.avsc'
+		def customerAvroPath = 'src/main/avro/customer.avsc'
+		def eventUnionAvroPath = 'src/main/avro/events_union.avsc'
+		
+    config {
+        subject('product-value', 'FULL')
+				subject('order-value', 'FULL')
+				subject('customer-value', 'FULL')
+				subject('events-union-value', 'FULL')
+    }
+
+		compatibility {
+			subject('order-value', orderAvroPath, serializer) 
+					.addLocalReference('product-value', productAvroPath)
+
+			subject('customer-value', customerAvroPath, serializer)
+
+			subject('events-union-value', eventUnionAvroPath, serializer)
+					.addLocalReference('order-value', orderAvroPath)
+					.addLocalReference('product-value', productAvroPath)
+					.addLocalReference('customer-value', customerAvroPath)
+		}
+    
+    register {
+			subject('order-value', orderAvroPath, serializer) 
+					.addLocalReference('product-value', productAvroPath)
+
+			subject('customer-value', customerAvroPath, serializer)
+
+			subject('events-union-value', eventUnionAvroPath, serializer)
+					.addLocalReference('order-value', orderAvroPath)
+					.addLocalReference('product-value', productAvroPath)
+					.addLocalReference('customer-value', customerAvroPath)
+
+    }
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	// Kafka related dependencies
 	implementation 'org.springframework.kafka:spring-kafka'
 	implementation 'io.confluent:kafka-avro-serializer:7.0.1'
   implementation 'org.apache.avro:avro:1.11.1' 
-	implementation 'org.springframework.boot:spring-boot-starter-web'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.kafka:spring-kafka-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
