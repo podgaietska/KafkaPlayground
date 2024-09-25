@@ -1,0 +1,22 @@
+version: "3.8"
+
+services:
+  redpanda:
+    image: docker.vectorized.io/vectorized/redpanda:latest
+    command:
+      - redpanda
+      - start
+      - --overprovisioned
+      - --smp 1
+      - --memory 1G
+      - --reserve-memory 0M
+      - --node-id 0
+      - --check=false
+    ports:
+      - "9092:9092" # Kafka broker port
+      - "8081:8081" # Schema Registry API
+    volumes:
+      - redpanda_data:/var/lib/redpanda/data
+
+volumes:
+  redpanda_data:
