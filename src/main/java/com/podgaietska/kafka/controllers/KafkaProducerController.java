@@ -4,6 +4,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.confluent.examples.avro.Customer;
+
 import com.podgaietska.kafka.services.KafkaProducerService;
 
 @RestController
@@ -15,9 +17,9 @@ public class KafkaProducerController {
     this.kafkaProducerService = kafkaProducerService;
   }
 
-  @PostMapping("/send")
-  public String sendMessage(@RequestBody String message) {
-    kafkaProducerService.send("test-topic", message);
-    return "Message sent to kafka topic!";
+  @PostMapping("/send/customer")
+  public String sendOrder(@RequestBody Customer customer) {
+    kafkaProducerService.send("events-union", customer);
+    return "Customer event sent to kafka topic!";
   }
 }
